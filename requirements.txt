@@ -4,7 +4,7 @@ uvicorn[standard]>=0.29
 python-multipart>=0.0.9
 # Models (CPU is fine; a GPU is used automatically if present)
 torch>=2.2
-transformers>=4.49
+transformers>=4.56
 sentencepiece>=0.2
 protobuf>=4.25
 accelerate>=0.30
