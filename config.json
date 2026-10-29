@@ -1,0 +1,12 @@
+{
+  "extractor": "google/siglip-so400m-patch14-384",
+  "llm": "Qwen/Qwen2.5-1.5B-Instruct",
+  "thresholds": {
+    "category": 0.5007944703102112,
+    "color": 0.605040967464447,
+    "material": 0.9860261082649231
+  },
+  "max_new_tokens": 120,
+  "max_upload_mb": 8,
+  "source": "Thresholds frozen on the dev split in the research run (outputs/frozen.json, commit 6de5154)."
+}

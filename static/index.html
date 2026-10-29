@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TrueTag — Honest Product Descriptions</title>
+  <meta name="description" content="Upload a clothing photo and get a product description that never invents a color, category or fabric.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231f6feb'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11.5' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="/static/style.css?v=2">
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="/"><span class="logo" aria-hidden="true"></span>TrueTag</a>
+      <nav>
+        <a href="#try">Try it</a>
+        <a href="#how">How it works</a>
+        <a href="#research">Research</a>
+      </nav>
+      <span id="status" class="status status-wait" title="Model status">Loading models…</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="wrap">
+        <p class="eyebrow">AI copywriting for fashion sellers</p>
+        <h1>Product descriptions that never invent what the photo doesn't show.</h1>
+        <p class="lead">Upload a clothing photo. TrueTag detects the category, color and fabric, says
+          <em>unknown</em> when it isn't sure, writes the listing, then checks every attribute it wrote
+          against the photo before you see it.</p>
+      </div>
+    </section>
+
+    <section id="try" class="wrap tool">
+      <div class="panel input-panel">
+        <label id="drop" class="drop" for="file">
+          <input id="file" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+          <img id="preview" alt="" hidden>
+          <span id="drop-text" class="drop-text">
+            <strong>Drop a product photo here</strong>
+            <span>or click to choose a file · JPG, PNG or WEBP, up to 8 MB</span>
+          </span>
+        </label>
+
+        <fieldset class="modes">
+          <legend>Writing mode</legend>
+          <label class="mode">
+            <input type="radio" name="mode" value="safe" checked>
+            <span><strong>Safe</strong> (recommended)<small>Fluent text; skips uncertain attributes; auto-corrected if the writer slips.</small></span>
+          </label>
+          <label class="mode">
+            <input type="radio" name="mode" value="strict">
+            <span><strong>Strict</strong><small>Attribute words are inserted by the system, never by the AI. Shorter text.</small></span>
+          </label>
+          <label class="mode">
+            <input type="radio" name="mode" value="forced">
+            <span><strong>No abstention</strong> (for comparison)<small>Always uses the top guess for every attribute, even when unsure.</small></span>
+          </label>
+        </fieldset>
+
+        <button id="go" class="btn" disabled>Generate description</button>
+        <p id="hint" class="hint">Choose a photo to begin.</p>
+      </div>
+
+      <div class="panel output-panel" id="output" aria-live="polite">
+        <div id="empty" class="empty">
+          <p>Your description will appear here.</p>
+          <p class="muted">Works best on a single garment: t-shirts, shirts, tops, kurtas, sarees, jeans, trousers,
+            shorts, dresses, skirts, sweaters, sweatshirts and jackets.</p>
+        </div>
+
+        <div id="busy" class="busy" hidden>
+          <div class="spinner" aria-hidden="true"></div>
+          <p id="busy-text">Reading the photo…</p>
+        </div>
+
+        <div id="result" hidden>
+          <h2 class="out-title">Detected attributes</h2>
+          <div id="attrs" class="attrs"></div>
+
+          <div class="desc-head">
+            <h2 class="out-title">Description</h2>
+            <button id="copy" class="btn-ghost" type="button">Copy</button>
+          </div>
+          <p id="desc" class="desc"></p>
+          <div id="guard" class="guard"></div>
+          <details id="details" class="details">
+            <summary>Technical details</summary>
+            <div id="tech"></div>
+          </details>
+        </div>
+
+        <div id="error" class="error" hidden></div>
+      </div>
+    </section>
+
+    <section id="how" class="wrap how">
+      <h2>How it works</h2>
+      <ol class="steps">
+        <li><span class="num">1</span><h3>Extract</h3><p>A vision model (SigLIP) compares the photo with descriptions of 13 garment types, 12 colors and 8 fabrics.</p></li>
+        <li><span class="num">2</span><h3>Abstain</h3><p>Any attribute below its confidence threshold becomes <em>unknown</em>. Thresholds were tuned on human-labelled photos to be right about 90% of the time when they commit.</p></li>
+        <li><span class="num">3</span><h3>Generate</h3><p>A language model writes 2–3 sentences from the attributes only, told never to mention or guess an unknown one.</p></li>
+        <li><span class="num">4</span><h3>Verify</h3><p>A rule-based checker reads the text back. If it names a color, garment or fabric the photo doesn't support, the text is rebuilt so it can't.</p></li>
+      </ol>
+    </section>
+
+    <section id="research" class="wrap research">
+      <h2>Why it's built this way</h2>
+      <p class="lead small">In our study on 200 human-labelled product photos, the usual approach of sending the photo
+        straight to a vision-language model got the garment type or color wrong in about half of descriptions.</p>
+      <div class="stats">
+        <div class="stat"><span class="big">46% → 7%</span><span>wrong garment type, image-only model vs. this pipeline</span></div>
+        <div class="stat"><span class="big">58% → 0%</span><span>wrong fabric claims once the system may say “unknown”</span></div>
+        <div class="stat"><span class="big">0</span><span>attribute errors added by the language model: every remaining error comes from the photo reader</span></div>
+        <div class="stat"><span class="big">93%</span><span>of descriptions human raters would publish as is</span></div>
+      </div>
+      <p class="muted small">Study: <em>Extract, Abstain, Generate: Decomposing the Origins of Attribute Hallucination in
+        Grounded E-Commerce Product Descriptions</em>, Team 10, RV University. The research used 7B models on a GPU;
+        this site runs a smaller writer (Qwen2.5-1.5B) so it works on a CPU, and adds the verify step on top.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">TrueTag · Team 10, RV University · Guide: Prof. Lokesh J K</div>
+  </footer>
+
+  <script src="/static/app.js?v=2"></script>
+</body>
+</html>

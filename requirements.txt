@@ -1,0 +1,14 @@
+# Web
+fastapi>=0.110
+uvicorn[standard]>=0.29
+python-multipart>=0.0.9
+# Models (CPU is fine; a GPU is used automatically if present)
+torch>=2.2
+transformers>=4.49
+sentencepiece>=0.2
+protobuf>=4.25
+accelerate>=0.30
+# Research code helpers
+numpy>=1.26
+pyyaml>=6.0
+Pillow>=10.0
