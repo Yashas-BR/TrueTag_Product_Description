@@ -102,6 +102,14 @@ class Result:
                 "timings": self.timings}
 
 
+def resolve(name: str, config: dict[str, Any] = CONFIG) -> tuple[str, str | None]:
+    """A model's local folder from ``download_models.py`` if present, else its Hub id + pinned revision."""
+    folder = ROOT / "models" / name.replace("/", "__")
+    if (folder / "config.json").exists():
+        return str(folder), None
+    return name, config.get("revisions", {}).get(name)
+
+
 class Engine:
     """Loads both models once; ``describe`` is thread-safe (one request at a time)."""
 
@@ -123,18 +131,18 @@ class Engine:
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         dtype = torch.float16 if self.device == "cuda" else torch.float32
 
-        name = self.config["extractor"]
+        name, rev = resolve(self.config["extractor"], self.config)
         LOGGER.info("loading extractor %s on %s", name, self.device)
-        self.processor = AutoProcessor.from_pretrained(name)
-        self.encoder = AutoModel.from_pretrained(name, dtype=dtype).to(self.device).eval()
+        self.processor = AutoProcessor.from_pretrained(name, revision=rev)
+        self.encoder = AutoModel.from_pretrained(name, revision=rev, dtype=dtype).to(self.device).eval()
         self.logit_scale = float(self.encoder.logit_scale.detach().float().exp().item())
         self.classes = self._class_embeddings()
 
-        name = os.environ.get("GHD_LLM", self.config["llm"])
+        self.llm_name = os.environ.get("GHD_LLM", self.config["llm"])
+        name, rev = resolve(self.llm_name, self.config)
         LOGGER.info("loading writer %s", name)
-        self.tokenizer = AutoTokenizer.from_pretrained(name)
-        self.llm = AutoModelForCausalLM.from_pretrained(name, dtype=dtype).to(self.device).eval()
-        self.llm_name = name
+        self.tokenizer = AutoTokenizer.from_pretrained(name, revision=rev)
+        self.llm = AutoModelForCausalLM.from_pretrained(name, revision=rev, dtype=dtype).to(self.device).eval()
         self.ready = True
         LOGGER.info("models ready in %.0f s", time.time() - t0)
 

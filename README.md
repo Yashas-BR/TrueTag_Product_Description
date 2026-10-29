@@ -39,6 +39,32 @@ Writing modes on the site:
 | Strict | APG | The system, not the AI, inserts attribute words; shorter text |
 | No abstention | B | Always uses the top guess; shown for comparison |
 
+## Set up from GitHub (for contributors)
+
+```bash
+git clone -b dev https://github.com/Yashas-BR/TrueTag_Product_Description.git
+cd TrueTag_Product_Description
+pip install -r requirements.txt
+python download_models.py
+```
+
+The last command downloads about 6.5 GB of models into `models/`. Then start the site as below.
+
+### Models
+
+The model weights are not stored in git. They are single files of 3.5 GB and 3.1 GB, above GitHub's
+limits (100 MB per file, or 2 GB per file with Git LFS). Instead, `config.json` pins each model to
+an exact Hugging Face commit, and `download_models.py` fetches exactly those weights. Every copy of
+the project therefore runs identical models.
+
+| Model | Role | Pinned revision | Size |
+|---|---|---|---|
+| [google/siglip-so400m-patch14-384](https://huggingface.co/google/siglip-so400m-patch14-384) | reads the photo | `9fdffc5` | 3.5 GB |
+| [Qwen/Qwen2.5-1.5B-Instruct](https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct) | writes the description | `989aa79` | 3.1 GB |
+
+The app loads from `models/` when that folder exists, so it then needs no internet. Otherwise it uses
+the Hugging Face cache (`HF_HOME`) at the same pinned revisions.
+
 ## Run on your computer (Windows)
 
 ```bat
@@ -115,7 +141,8 @@ app/main.py         web server (FastAPI): website + API
 app/engine.py       pipeline: extract -> abstain -> generate -> verify
 app/groundedgen/    research modules reused unchanged (taxonomy, prompts, claim checker, APG)
 static/             the website (HTML, CSS, JavaScript)
-config.json         models, frozen thresholds, limits
+config.json         models + pinned revisions, frozen thresholds, limits
+download_models.py  fetches the pinned model weights into models/
 Dockerfile          container for hosting
 ```
 

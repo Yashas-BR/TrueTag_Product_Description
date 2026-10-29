@@ -8,5 +8,9 @@
   },
   "max_new_tokens": 120,
   "max_upload_mb": 8,
-  "source": "Thresholds frozen on the dev split in the research run (outputs/frozen.json, commit 6de5154)."
+  "source": "Thresholds frozen on the dev split in the research run (outputs/frozen.json, commit 6de5154).",
+  "revisions": {
+    "google/siglip-so400m-patch14-384": "9fdffc58afc957d1a03a25b10dba0329ab15c2a3",
+    "Qwen/Qwen2.5-1.5B-Instruct": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306"
+  }
 }

@@ -3,3 +3,4 @@ __pycache__/
 .venv/
 hf_cache/
 .claude/
+models/
