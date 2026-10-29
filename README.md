@@ -52,6 +52,10 @@ Then open http://127.0.0.1:7860.
 - Loading takes about a minute. After that, each photo takes roughly 5–20 seconds on a CPU.
 - The page shows "Ready · CPU" when the models are loaded.
 
+**Offline use:** once the models are downloaded, the site runs with no internet at all.
+`run_local.bat` sets `HF_HUB_OFFLINE=1`, so nothing is fetched at startup. Offline, the page falls
+back from the Inter web font to the system font.
+
 On macOS or Linux:
 
 ```bash
