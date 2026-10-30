@@ -50,7 +50,7 @@ def startup() -> None:
 def health() -> dict:
     return {"ready": engine.ready, "error": engine.error,
             "extractor": CONFIG["extractor"], "llm": getattr(engine, "llm_name", CONFIG["llm"]),
-            "device": getattr(engine, "device", None)}
+            "device": getattr(engine, "device", None), "dtype": getattr(engine, "dtype_name", None)}
 
 
 @app.post("/api/describe")

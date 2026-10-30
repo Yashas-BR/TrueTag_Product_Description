@@ -124,6 +124,7 @@ The volume keeps downloaded models between restarts. The `PORT` environment vari
 |---|---|---|
 | `GHD_LLM` | `Qwen/Qwen2.5-1.5B-Instruct` | Writer model. On a GPU host, `Qwen/Qwen2.5-7B-Instruct` matches the paper. |
 | `HF_HOME` | `D:\hf_cache` locally, `/data/hf_cache` in Docker | Where models are stored |
+| `GHD_LOW_MEMORY` | off | `1` loads models in bfloat16 on CPU: peak RAM 5.5 GB instead of 9.4 GB, about 1.5x slower; fits an 8 GB host |
 | `PORT` | `7860` | Port (Docker only) |
 
 ## API

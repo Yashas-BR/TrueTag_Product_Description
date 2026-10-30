@@ -129,7 +129,10 @@ class Engine:
         t0 = time.time()
         torch.set_grad_enabled(False)
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
-        dtype = torch.float16 if self.device == "cuda" else torch.float32
+        # GHD_LOW_MEMORY=1 halves RAM on CPU hosts (bfloat16 weights: about 6 GB instead of 11 GB).
+        low = os.environ.get("GHD_LOW_MEMORY", "").lower() in ("1", "true", "yes")
+        dtype = torch.float16 if self.device == "cuda" else (torch.bfloat16 if low else torch.float32)
+        self.dtype_name = str(dtype).replace("torch.", "")
 
         name, rev = resolve(self.config["extractor"], self.config)
         LOGGER.info("loading extractor %s on %s", name, self.device)
